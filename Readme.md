@@ -19,7 +19,7 @@ cd quiz-leaderboard-system-bajaj-finserv
 node index.js
 ```
 
-> ⏱ Takes ~45–50 seconds (10 polls × 5s mandatory delay)
+>  Takes ~45–50 seconds (10 polls × 5s mandatory delay)
 
 ---
 
