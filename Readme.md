@@ -93,5 +93,5 @@ for (const event of allEvents) {
 quiz-leaderboard/
 ├── index.js        # Main solution
 ├── package.json    # Project metadata
-└── README.md       # This file
+└── Readme.md       # This file
 ```
