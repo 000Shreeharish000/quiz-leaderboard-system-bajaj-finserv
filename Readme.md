@@ -11,7 +11,7 @@ The validator simulates a real quiz show — participants earn scores across mul
 
 ## Setup & Run
 
-**Prerequisites:** Node.js v18+ (no external packages — uses built-in `fetch`)
+**Prerequisites:** Node.js v18+ 
 
 ```bash
 git clone https://github.com/000Shreeharish000/quiz-leaderboard-system-bajaj-finserv.git
