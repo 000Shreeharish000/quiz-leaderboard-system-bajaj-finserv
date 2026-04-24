@@ -3,6 +3,25 @@
 
 ---
 
+## Setup & Run
+
+### Prerequisites
+- Node.js v18 or higher (uses built-in `fetch`)
+
+### Steps
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/your-username/quiz-leaderboard.git
+cd quiz-leaderboard-system-bajaj-finserv
+# 3. Run
+node index.js
+```
+
+> ⏱ The script takes ~45 seconds (10 polls × 5s delay)
+
+---
+
 ## Problem Overview
 
 A backend integration challenge: poll a validator API 10 times, deduplicate events by `(roundId + participant)`, aggregate scores, and submit a correct leaderboard — once.
@@ -46,24 +65,6 @@ This ensures each `(roundId, participant)` pair is counted exactly once, regardl
 
 ---
 
-## Setup & Run
-
-### Prerequisites
-- Node.js v18 or higher (uses built-in `fetch`)
-
-### Steps
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/your-username/quiz-leaderboard.git
-cd quiz-leaderboard-system-bajaj-finserv
-# 3. Run
-node index.js
-```
-
-> ⏱ The script takes ~45 seconds (10 polls × 5s delay)
-
----
 
 ## API Reference
 
