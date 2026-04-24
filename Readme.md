@@ -12,7 +12,7 @@
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-username/quiz-leaderboard.git
+#2. Enter the Directory 
 cd quiz-leaderboard-system-bajaj-finserv
 # 3. Run
 node index.js
