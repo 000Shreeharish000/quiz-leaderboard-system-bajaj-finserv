@@ -1,5 +1,5 @@
 # Quiz Leaderboard System
-### Bajaj Finserv Health — JAVA Qualifier | SRM | Internship Assignment
+### Bajaj Finserv Health 
 
 ---
 
