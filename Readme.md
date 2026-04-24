@@ -1,9 +1,31 @@
 # Quiz Leaderboard System
-### Bajaj Finserv Health 
+### Bajaj Finserv Health — JAVA Qualifier | SRM | Internship Assignment
 
 ---
 
-## Expected Flow
+## Problem Overview
+
+The validator simulates a real quiz show — participants earn scores across multiple rounds. The twist: **the same event data can appear in multiple poll responses** (a common pattern in distributed systems). Naive aggregation overcounts scores. The solution must poll correctly, deduplicate, aggregate, and submit exactly once.
+
+---
+
+## Setup & Run
+
+**Prerequisites:** Node.js v18+ (no external packages — uses built-in `fetch`)
+
+```bash
+git clone https://github.com/000Shreeharish000/quiz-leaderboard-system-bajaj-finserv.git
+cd quiz-leaderboard-system-bajaj-finserv
+node index.js
+```
+
+> ⏱ Takes ~45–50 seconds (10 polls × 5s mandatory delay)
+
+---
+
+---
+
+## Flow
 
 ```
 Poll API (×10, 5s apart)
@@ -23,41 +45,42 @@ Submit once → verify isCorrect
 
 ---
 
-## Setup & Run
+## How It Works — End to End
 
-### Prerequisites
+### Step 1 · Poll the API 10 times with a 5s delay
 
-- Node.js v18 or higher (uses built-in `fetch` — no external dependencies)
+The validator exposes data across 10 poll indexes (0–9). Each is fetched sequentially with a forced 5-second wait between calls — a hard requirement of the assignment.
 
-### Steps
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/000Shreeharish000/quiz-leaderboard-system-bajaj-finserv.git
-
-# 2. Navigate to the project directory
-cd quiz-leaderboard-system-bajaj-finserv
-
-# 3. Run the script
-node index.js
+```js
+for (let poll = 0; poll < TOTAL_POLLS; poll++) {
+  const data = await fetchPoll(poll);
+  if (data.events && Array.isArray(data.events)) {
+    allEvents.push(...data.events);
+  }
+  if (poll < TOTAL_POLLS - 1) await sleep(POLL_DELAY_MS); // 5000ms
+}
 ```
 
-> ⏱ The script takes approximately **45–50 seconds** to complete (10 polls × 5s mandatory delay).
+Each poll hits:
+```
+GET /quiz/messages?regNo=RA2311027050036&poll=0
+```
+And returns a response like:
+```json
+{
+  "pollIndex": 0,
+  "events": [
+    { "roundId": "R1", "participant": "Alice", "score": 10 },
+    { "roundId": "R1", "participant": "Bob",   "score": 20 }
+  ]
+}
+```
 
 ---
 
-## API Reference
+### Step 2 · Deduplicate by `(roundId + participant)` ← the critical step
 
-**Base URL:** `https://devapigw.vidalhealthtpa.com/srm-quiz-task`
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/quiz/messages?regNo=&poll=` | Fetch events for a given poll index (0–9) |
-| `POST` | `/quiz/submit` | Submit the final leaderboard |
-
-### Deduplication Implementation
-
-Each `(roundId, participant)` pair is tracked in a Set. On every subsequent poll, any pair already seen is discarded — ensuring each event is counted **exactly once** regardless of how many times it appears across polls.
+The same event can appear in multiple polls. Without deduplication, Alice's score gets counted twice, producing a wrong total. A `Set` tracks every seen `(roundId, participant)` pair — duplicates are silently dropped.
 
 ```js
 const seen = new Set();
@@ -69,6 +92,61 @@ for (const event of allEvents) {
     seen.add(key);
     uniqueEvents.push(event);
   }
+  // duplicate → skipped, not added
+}
+```
+
+**Why this matters:**
+```
+Without dedup:  Poll 1 → Alice +10 | Poll 3 → Alice +10  →  Total = 20  ✗
+With dedup:     Poll 1 → Alice +10 | Poll 3 → ignored    →  Total = 10  ✓
+```
+
+---
+
+### Step 3 · Aggregate scores per participant
+
+After deduplication, each unique event is summed into a score map:
+
+```js
+const scoreMap = {};
+for (const { participant, score } of uniqueEvents) {
+  scoreMap[participant] = (scoreMap[participant] || 0) + score;
+}
+```
+
+---
+
+### Step 4 · Sort leaderboard by `totalScore` descending
+
+```js
+const leaderboard = Object.entries(scoreMap)
+  .map(([participant, totalScore]) => ({ participant, totalScore }))
+  .sort((a, b) => b.totalScore - a.totalScore);
+```
+
+---
+
+### Step 5 · Submit once
+
+```js
+POST /quiz/submit
+{
+  "regNo": "RA2311027050036",
+  "leaderboard": [
+    { "participant": "Bob",   "totalScore": 120 },
+    { "participant": "Alice", "totalScore": 100 }
+  ]
+}
+```
+
+A correct submission returns:
+```json
+{
+  "isCorrect": true,
+  "submittedTotal": 220,
+  "expectedTotal": 220,
+  "message": "Correct!"
 }
 ```
 
@@ -78,12 +156,12 @@ for (const event of allEvents) {
 
 - [x] 10 polls executed (poll = 0 to poll = 9)
 - [x] 5-second mandatory delay between polls
-- [x] Deduplication applied by `(roundId + participant)`
+- [x] Deduplication by `(roundId + participant)`
 - [x] Scores aggregated per participant
 - [x] Leaderboard sorted by `totalScore` descending
 - [x] Total score computed correctly
 - [x] Submitted exactly once
-- [x] No external dependencies (uses Node.js built-in `fetch`)
+- [x] Zero external dependencies
 
 ---
 
@@ -91,7 +169,7 @@ for (const event of allEvents) {
 
 ```
 quiz-leaderboard/
-├── index.js        # Main solution
+├── index.js        # Full solution
 ├── package.json    # Project metadata
-└── Readme.md       # This file
+└── README.md       # This file
 ```
