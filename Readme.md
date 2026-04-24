@@ -8,23 +8,24 @@
 ### Prerequisites
 - Node.js v18 or higher (uses built-in `fetch`)
 
+## Setup & Run
+
+### Prerequisites
+- Node.js v18 or higher (uses built-in `fetch`)
+
 ### Steps
 
 ```bash
-clone the repository or download zip
-#2. Enter the Directory 
+# 1. Clone the repository
+git clone https://github.com/your-username/quiz-leaderboard-system-bajaj-finserv.git
+
+# 2. Navigate to project directory
 cd quiz-leaderboard-system-bajaj-finserv
-# 3. Run
+
+# 3. Run the script
 node index.js
-```
 
-> ⏱ The script takes ~45 seconds (10 polls × 5s delay)
-
----
-
-## Problem Overview
-
-A backend integration challenge: poll a validator API 10 times, deduplicate events by `(roundId + participant)`, aggregate scores, and submit a correct leaderboard — once.
+> ⏱ The script takes ~45 t0 50 seconds (10 polls × 5s delay)
 
 ---
 
