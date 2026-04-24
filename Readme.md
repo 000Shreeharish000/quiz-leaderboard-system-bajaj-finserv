@@ -30,7 +30,6 @@ node index.js
 ---
 
 ## Solution Design
-
 ```
 Poll API (x10, 5s apart)
         ↓
