@@ -11,7 +11,7 @@
 ### Steps
 
 ```bash
-# 1. Clone the repo
+clone the repository or download zip
 #2. Enter the Directory 
 cd quiz-leaderboard-system-bajaj-finserv
 # 3. Run
